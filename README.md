@@ -4,7 +4,7 @@ This project provides a simple web application to view transaction data for a sp
 
 ## Project Structure :
 ```
-transaction-api/
+project/
 ├── node_modules/
 ├── public/
 │   └── index.html
@@ -17,7 +17,7 @@ transaction-api/
 ## 1. Clone the repository
 
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/chetanck03/project.git
    ```
 
 ## 2. Install dependencies :
