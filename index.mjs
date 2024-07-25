@@ -1,51 +1,38 @@
+// index.mjs
+
 import express from 'express';
-import fetch from 'node-fetch';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import axios from 'axios';
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const port = process.env.PORT || 3000;
 
-const MAINNET_BETA_API_URL = 'https://api.mainnet-beta.solana.com';
+// Replace with the actual Solana API URL
+const API_URL = 'https://api.mainnet-beta.solana.com';
 
-const WALLET_ADDRESS = '4UYjrT5hmMTh9pLFg1Mxh49besnAeCc23qFoZc6WnQkK';
+app.get('/transactions/:walletAddress', async (req, res) => {
+    const walletAddress = req.params.walletAddress;
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+    try {
+        // Fetch the transaction signatures for the given wallet address
+        const response = await axios.post(API_URL, {
+            jsonrpc: '2.0',
+            id: 1,
+            method: 'getConfirmedSignaturesForAddress2',
+            params: [walletAddress]
+        });
 
-app.use(express.static(path.join(__dirname, 'public')));
-
-app.get('/transactions', async (req, res) => {
-  try {
-    const response = await fetch(MAINNET_BETA_API_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        jsonrpc: '2.0',
-        id: 1,
-        method: 'getSignaturesForAddress',
-        params: [
-          WALLET_ADDRESS,
-          { limit: 50 }, // Adjust limit as needed
-        ],
-      }),
-    });
-
-    const data = await response.json();
-
-    if (data.error) {
-      return res.status(500).json({ error: data.error.message });
+        // Return the transaction data including the wallet address
+        res.json({
+            walletAddress,
+            transactions: response.data.result
+        });
+    } catch (error) {
+        // Handle any errors that occur
+        console.error('Error fetching transaction data:', error);
+        res.status(500).json({ error: 'Failed to fetch transaction data' });
     }
-
-    return res.json(data.result);
-  } catch (error) {
-    console.error('Error fetching transactions:', error);
-    return res.status(500).json({ error: 'Internal Server Error' });
-  }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port http://localhost:${PORT}/`);
+app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
 });
