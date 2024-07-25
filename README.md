@@ -14,17 +14,12 @@ project/
 ```
 
 # Installation :
-## 1. Clone the repository
+##  Clone the repository
 
    ```bash
    git clone https://github.com/chetanck03/project.git
    ```
 
-## 2. Install dependencies :
-To install the necessary npm modules, run:
-```
-npm i
-```
 
 # Running the Project :
 
